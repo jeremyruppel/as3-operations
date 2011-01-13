@@ -9,6 +9,7 @@
 
 package com.jeremyruppel.operations
 {
+	import com.jeremyruppel.operations.base.OperationBaseFixture;
 	import com.jeremyruppel.operations.base.OperationFixture;
 	import com.jeremyruppel.operations.group.OperationGroupFixture;
 
@@ -30,6 +31,7 @@ package com.jeremyruppel.operations
 		//--------------------------------------
 		
 		public var operationFixture : OperationFixture;
+		public var operationBaseFixture : OperationBaseFixture;
 		
 		public var operationGroupFixture : OperationGroupFixture;
 		
