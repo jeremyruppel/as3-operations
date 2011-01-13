@@ -20,7 +20,7 @@ package com.jeremyruppel.operations.base
 	 * @author Jeremy Ruppel
 	 * @since  13.01.2011
 	 */
-	public class Operation implements IOperation
+	public class Operation extends OperationBase
 	{
 		//--------------------------------------
 		//  CONSTRUCTOR
@@ -31,64 +31,19 @@ package com.jeremyruppel.operations.base
 		 */
 		public function Operation( successClass : Class, failureClass : Class, block : Function )
 		{
-			_successClass = successClass;
-			_failureClass = failureClass;
-			_block = block;
+			super( successClass, failureClass );
+			
+			this.block = block;
 		}
 	
 		//--------------------------------------
 		//  PRIVATE VARIABLES
 		//--------------------------------------
-	
-		/**
-		 * @private
-		 */
-		protected var _successClass : Class;
 		
 		/**
 		 * @private
 		 */
-		protected var _failureClass : Class;
-		
-		/**
-		 * @private
-		 */
-		protected var _block : Function;
-
-		/**
-		 * @private
-		 */
-		protected var _succeeded : ISignalOwner;
-		
-		/**
-		 * @private
-		 */
-		protected var _failed : ISignalOwner;
-		
-		/**
-		 * @private
-		 */
-		protected var _calling : Boolean;
-		
-		//--------------------------------------
-		//  GETTER / SETTERS
-		//--------------------------------------
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get succeeded( ) : ISignal
-		{
-			return _succeeded || ( _succeeded = ( _successClass ? new Signal( _successClass ) : new Signal( ) ) );
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get failed( ) : ISignal
-		{
-			return _failed || ( _failed = ( _failureClass ? new Signal( _failureClass ) : new Signal( ) ) );
-		}
+		protected var block : Function;
 		
 		//--------------------------------------
 		//  PUBLIC METHODS
@@ -122,41 +77,18 @@ package com.jeremyruppel.operations.base
 			release( );
 		}
 		
-		/**
-		 * @inheritDoc
-		 */
-		public function call( ) : void
-		{
-			if( !_calling )
-			{
-				_block.call( null, this );
-				
-				_calling = true;
-			}
-		}
-		
 		//--------------------------------------
 		//  PROTECTED METHODS
 		//--------------------------------------
 		
 		/**
-		 * removes all listeners from this operation's signals
-		 * @private
+		 * @inheritDoc
 		 */
-		protected function release( ) : void
+		override protected function begin( ) : void
 		{
-			if( succeeded.numListeners )
-			{
-				_succeeded.removeAll( );
-			}
-			
-			if( failed.numListeners )
-			{
-				_failed.removeAll( );
-			}
-			
-			_calling = false;
+			block.call( null, this );
 		}
+
 	}
 
 }

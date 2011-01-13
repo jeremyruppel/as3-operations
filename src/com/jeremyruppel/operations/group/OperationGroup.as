@@ -6,6 +6,7 @@
 
 package com.jeremyruppel.operations.group
 {
+	import com.jeremyruppel.operations.base.OperationBase;
 	import com.jeremyruppel.operations.core.IOperation;
 	import com.jeremyruppel.operations.core.IOperationGroup;
 	import org.osflash.signals.ISignal;
@@ -23,7 +24,7 @@ package com.jeremyruppel.operations.group
 	 * @author Jeremy Ruppel
 	 * @since  13.01.2011
 	 */
-	public class OperationGroup implements IOperationGroup
+	public class OperationGroup extends OperationBase implements IOperationGroup
 	{
 		//--------------------------------------
 		//  CONSTRUCTOR
@@ -34,32 +35,19 @@ package com.jeremyruppel.operations.group
 		 */
 		public function OperationGroup( skipFailed : Boolean = false )
 		{
+			super( );
+			
 			this.skipFailed = skipFailed;
 		}
 	
 		//--------------------------------------
 		//  PRIVATE VARIABLES
 		//--------------------------------------
-	
-		/**
-		 * @private
-		 */
-		private var _succeeded : ISignalOwner;
 		
 		/**
 		 * @private
 		 */
-		private var _failed : ISignalOwner;
-		
-		/**
-		 * @private
-		 */
-		private var _operations : Array;
-		
-		/**
-		 * @private
-		 */
-		private var _calling : Boolean;
+		private var operations : Array = new Array( );
 		
 		/**
 		 * @private
@@ -70,34 +58,6 @@ package com.jeremyruppel.operations.group
 		 * @private
 		 */
 		private var skipFailed : Boolean;
-		
-		//--------------------------------------
-		//  GETTER/SETTERS
-		//--------------------------------------
-	
-		/**
-		 * @inheritDoc
-		 */
-		public function get succeeded( ) : ISignal
-		{
-			return _succeeded || ( _succeeded = new Signal( ) );
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get failed( ) : ISignal
-		{
-			return _failed || ( _failed = new Signal( ) );
-		}
-		
-		/**
-		 * @private
-		 */
-		public function get operations( ) : Array
-		{
-			return _operations || ( _operations = new Array( ) );
-		}
 		
 		//--------------------------------------
 		//  PUBLIC METHODS
@@ -115,31 +75,26 @@ package com.jeremyruppel.operations.group
 			return this;
 		}
 		
-		/**
-		 * @inheritDoc
-		 */
-		public function call( ) : void
-		{
-			if( !_calling )
-			{
-				_calling = true;
-				
-				completed = 0;
-
-				for each( var operation : IOperation in operations )
-				{
-					operation.succeeded.add( onOperationSucceeded );
-
-					operation.failed.add( onOperationFailed );
-
-					operation.call( );
-				}
-			}
-		}
-		
 		//--------------------------------------
 		//  EVENT HANDLERS
 		//--------------------------------------
+		
+		/**
+		 * @inheritDoc
+		 */
+		override protected function begin( ) : void
+		{
+			completed = 0;
+
+			for each( var operation : IOperation in operations )
+			{
+				operation.succeeded.add( onOperationSucceeded );
+
+				operation.failed.add( onOperationFailed );
+
+				operation.call( );
+			}
+		}
 	
 		/**
 		 * @param payload *
@@ -177,29 +132,6 @@ package com.jeremyruppel.operations.group
 				
 				release( );
 			}
-		}
-		
-		//--------------------------------------
-		//  PROTECTED METHODS
-		//--------------------------------------
-		
-		/**
-		 * description
-		 * @private
-		 */
-		protected function release( ) : void
-		{
-			if( succeeded.numListeners )
-			{
-				_succeeded.removeAll( );
-			}
-			
-			if( failed.numListeners )
-			{
-				_failed.removeAll( );
-			}
-			
-			_calling = false;
 		}
 	
 	}
