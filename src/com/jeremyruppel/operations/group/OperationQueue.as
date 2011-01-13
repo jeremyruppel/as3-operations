@@ -7,16 +7,11 @@
 package com.jeremyruppel.operations.group
 {
 	import com.jeremyruppel.operations.base.OperationBase;
-	import com.jeremyruppel.operations.core.IOperation;
 	import com.jeremyruppel.operations.core.IOperationGroup;
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.ISignalOwner;
-	import org.osflash.signals.Signal;
+	import com.jeremyruppel.operations.core.IOperation;
 
 	/**
-	 * Basic operation group that calls all of its sub-operations at the
-	 * same time and succeeds when all of the sub-operations have
-	 * succeeded. Can optionally be configured to skip failures.
+	 * Class.
 	 * 
 	 * @langversion ActionScript 3.0
 	 * @playerversion Flash 9.0
@@ -24,7 +19,7 @@ package com.jeremyruppel.operations.group
 	 * @author Jeremy Ruppel
 	 * @since  13.01.2011
 	 */
-	public class OperationGroup extends OperationBase implements IOperationGroup
+	public class OperationQueue extends OperationBase implements IOperationGroup
 	{
 		//--------------------------------------
 		//  CONSTRUCTOR
@@ -33,10 +28,8 @@ package com.jeremyruppel.operations.group
 		/**
 		 * @constructor
 		 */
-		public function OperationGroup( skipFailed : Boolean = false )
+		public function OperationQueue( skipFailed : Boolean = false )
 		{
-			super( );
-			
 			this.skipFailed = skipFailed;
 		}
 	
@@ -52,17 +45,12 @@ package com.jeremyruppel.operations.group
 		/**
 		 * @private
 		 */
-		private var completed : int;
-		
-		/**
-		 * @private
-		 */
 		private var skipFailed : Boolean;
 		
 		//--------------------------------------
 		//  PUBLIC METHODS
 		//--------------------------------------
-
+		
 		/**
 		 * @inheritDoc
 		 * @param operation IOperation
@@ -85,15 +73,7 @@ package com.jeremyruppel.operations.group
 		 */
 		protected function onOperationSucceeded( payload : * ) : void
 		{
-			if( ++completed == operations.length )
-			{
-				if( succeeded.numListeners )
-				{
-					_succeeded.dispatch( );
-				}
-				
-				release( );
-			}
+			proceed( );
 		}
 		
 		/**
@@ -118,7 +98,7 @@ package com.jeremyruppel.operations.group
 		}
 		
 		//--------------------------------------
-		//  PROTECTED METHODS
+		//  PRIVATE & PROTECTED INSTANCE METHODS
 		//--------------------------------------
 		
 		/**
@@ -126,18 +106,32 @@ package com.jeremyruppel.operations.group
 		 */
 		override protected function begin( ) : void
 		{
-			completed = 0;
-
-			for each( var operation : IOperation in operations )
+			proceed( );
+		}
+		
+		/**
+		 * @private
+		 */
+		protected function proceed( ) : void
+		{
+			if( operations.length )
 			{
+				var operation : IOperation = operations.shift( );
+				
 				operation.succeeded.add( onOperationSucceeded );
 
 				operation.failed.add( onOperationFailed );
 
 				operation.call( );
 			}
+			else
+			{
+				if( succeeded.numListeners )
+				{
+					_succeeded.dispatch( );
+				}
+			}
 		}
-	
 	}
 
 }

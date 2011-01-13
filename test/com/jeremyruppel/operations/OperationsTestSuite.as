@@ -12,6 +12,7 @@ package com.jeremyruppel.operations
 	import com.jeremyruppel.operations.base.OperationBaseFixture;
 	import com.jeremyruppel.operations.base.OperationFixture;
 	import com.jeremyruppel.operations.group.OperationGroupFixture;
+	import com.jeremyruppel.operations.group.OperationQueueFixture;
 
 	/**
 	 * Class.
@@ -34,6 +35,7 @@ package com.jeremyruppel.operations
 		public var operationBaseFixture : OperationBaseFixture;
 		
 		public var operationGroupFixture : OperationGroupFixture;
+		public var operationQueueFixture : OperationQueueFixture;
 		
 		//--------------------------------------
 		//  CONSTRUCTOR
