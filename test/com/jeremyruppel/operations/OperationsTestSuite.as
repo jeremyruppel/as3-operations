@@ -11,6 +11,7 @@ package com.jeremyruppel.operations
 {
 	import com.jeremyruppel.operations.base.OperationBaseFixture;
 	import com.jeremyruppel.operations.base.OperationFixture;
+	import com.jeremyruppel.operations.chain.OperationChainFixture;
 	import com.jeremyruppel.operations.group.OperationGroupFixture;
 	import com.jeremyruppel.operations.group.OperationQueueFixture;
 
@@ -31,9 +32,14 @@ package com.jeremyruppel.operations
 		//  TEST FIXTURES
 		//--------------------------------------
 		
-		public var operationFixture : OperationFixture;
-		public var operationBaseFixture : OperationBaseFixture;
+		// base                          : base implementations
+		public var operationFixture      : OperationFixture;
+		public var operationBaseFixture  : OperationBaseFixture;
 		
+		// chain                         : operation chaining
+		public var operationChainFixture : OperationChainFixture;
+		
+		// group                         : groups of operations
 		public var operationGroupFixture : OperationGroupFixture;
 		public var operationQueueFixture : OperationQueueFixture;
 		

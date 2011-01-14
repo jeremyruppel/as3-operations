@@ -4,10 +4,10 @@
 // 
 ////////////////////////////////////////////////////////////////////////////////
 
-package com.jeremyruppel.operations.group
+package com.jeremyruppel.operations.chain
 {
 	import com.jeremyruppel.operations.base.OperationBase;
-	import com.jeremyruppel.operations.core.IOperationGroup;
+	import com.jeremyruppel.operations.core.IOperationFactory;
 	import com.jeremyruppel.operations.core.IOperation;
 
 	/**
@@ -19,7 +19,7 @@ package com.jeremyruppel.operations.group
 	 * @author Jeremy Ruppel
 	 * @since  13.01.2011
 	 */
-	public class OperationQueue extends OperationBase implements IOperationGroup
+	public class OperationChain extends OperationBase
 	{
 		//--------------------------------------
 		//  CONSTRUCTOR
@@ -28,37 +28,27 @@ package com.jeremyruppel.operations.group
 		/**
 		 * @constructor
 		 */
-		public function OperationQueue( skipFailed : Boolean = false )
+		public function OperationChain( )
 		{
-			this.skipFailed = skipFailed;
 		}
 	
 		//--------------------------------------
 		//  PRIVATE VARIABLES
 		//--------------------------------------
+	
+		private var factories : Array = new Array( );
 		
-		/**
-		 * @private
-		 */
-		private var operations : Array = new Array( );
-		
-		/**
-		 * @private
-		 */
-		private var skipFailed : Boolean;
-		
+		//--------------------------------------
+		//  GETTER/SETTERS
+		//--------------------------------------
+	
 		//--------------------------------------
 		//  PUBLIC METHODS
 		//--------------------------------------
-		
-		/**
-		 * @inheritDoc
-		 * @param operation IOperation
-		 * @return IOperationGroup 
-		 */
-		public function add( operation : IOperation ) : IOperationGroup
+	
+		public function add( factory : IOperationFactory ) : OperationChain
 		{
-			operations.push( operation );
+			factories.push( factory );
 			
 			return this;
 		}
@@ -66,35 +56,28 @@ package com.jeremyruppel.operations.group
 		//--------------------------------------
 		//  EVENT HANDLERS
 		//--------------------------------------
-	
+		
 		/**
 		 * @param payload *
 		 * @private
 		 */
-		protected function onOperationSucceeded( payload : * ) : void
+		private function onOperationSucceeded( payload : * ) : void
 		{
-			proceed( );
+			proceed( payload );
 		}
 		
 		/**
 		 * @param payload *
 		 * @private
 		 */
-		protected function onOperationFailed( payload : * ) : void
+		private function onOperationFailed( payload : * ) : void
 		{
-			if( skipFailed )
+			if( failed.numListeners )
 			{
-				onOperationSucceeded( payload );
+				_failed.dispatch( payload );
 			}
-			else
-			{
-				if( failed.numListeners )
-				{
-					_failed.dispatch( );
-				}
-				
-				release( );
-			}
+			
+			release( );
 		}
 		
 		//--------------------------------------
@@ -110,30 +93,35 @@ package com.jeremyruppel.operations.group
 		}
 		
 		/**
+		 * @param payload *
 		 * @private
 		 */
-		protected function proceed( ) : void
+		protected function proceed( payload : * = null ) : void
 		{
-			if( operations.length )
+			if( factories.length )
 			{
-				var operation : IOperation = operations.shift( );
+				var factory : IOperationFactory = factories.shift( );
+				
+				var operation : IOperation = factory.create.call( null, payload );
 				
 				operation.succeeded.add( onOperationSucceeded );
-
+				
 				operation.failed.add( onOperationFailed );
-
+				
 				operation.call( );
 			}
 			else
 			{
 				if( succeeded.numListeners )
 				{
-					_succeeded.dispatch( );
+					_succeeded.dispatch( payload );
 				}
 				
 				release( );
 			}
+			
 		}
+	
 	}
 
 }
