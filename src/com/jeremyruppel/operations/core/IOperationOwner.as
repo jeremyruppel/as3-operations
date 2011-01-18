@@ -17,9 +17,9 @@ package com.jeremyruppel.operations.core
 	 * @playerversion Flash 9.0
 	 * 
 	 * @author Jeremy Ruppel
-	 * @since  13.01.2011
+	 * @since  18.01.2011
 	 */
-	public interface IOperationFactory
+	public interface IOperationOwner
 	{
 	
 		//--------------------------------------
@@ -27,12 +27,16 @@ package com.jeremyruppel.operations.core
 		//--------------------------------------
 		
 		/**
-		 * Retrieves an operation instance from the factory, optionally
-		 * passing a payload that the operation may depend on.
+		 * tells this operation to succeed, optionally with a payload
 		 * @param payload *
-		 * @return IOperation 
 		 */
-		function create( payload : * = null ) : IOperation;
+		function succeed( payload : * = null ) : void;
+		
+		/**
+		 * tells this operation to fail, optionally with a payload
+		 * @param payload *
+		 */
+		function fail( payload : * = null ) : void;
 	
 	}
 

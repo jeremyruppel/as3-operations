@@ -14,7 +14,9 @@ package com.jeremyruppel.operations.group
 	import com.jeremyruppel.operations.core.IOperation;
 
 	/**
-	 * Class.
+	 * Basic operation queue that executes sub-operations single-file and succeeds
+	 * if all sub-operations in the queue succeed. Can optionally be configured
+	 * to skip failures.
 	 * 
 	 * @langversion ActionScript 3.0
 	 * @playerversion Flash 9.0

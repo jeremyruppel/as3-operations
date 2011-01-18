@@ -9,13 +9,11 @@
 
 package com.jeremyruppel.operations.base
 {
-	import com.jeremyruppel.operations.core.IOperation;
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.ISignalOwner;
-	import org.osflash.signals.Signal;
+	import com.jeremyruppel.operations.core.IOperationOwner;
 
 	/**
-	 * Class.
+	 * Simple operation implementation. Provides owner-exposed methods to control
+	 * success and failure of the operation.
 	 * 
 	 * @langversion ActionScript 3.0
 	 * @playerversion Flash 9.0
@@ -23,7 +21,7 @@ package com.jeremyruppel.operations.base
 	 * @author Jeremy Ruppel
 	 * @since  13.01.2011
 	 */
-	public class Operation extends OperationBase
+	public class Operation extends OperationBase implements IOperationOwner
 	{
 		//--------------------------------------
 		//  CONSTRUCTOR
@@ -53,28 +51,26 @@ package com.jeremyruppel.operations.base
 		//--------------------------------------
 		
 		/**
-		 * tells this operation to succeed, optionally with a payload
-		 * @param withData *
+		 * @inheritDoc
 		 */
-		public function succeed( withData : * = null ) : void
+		public function succeed( payload : * = null ) : void
 		{
 			if( succeeded.numListeners )
 			{
-				_succeeded.dispatch( withData );
+				_succeeded.dispatch( payload );
 			}
 			
 			release( );
 		}
 		
 		/**
-		 * tells this operation to fail, optionally with a payload
-		 * @param withData *
+		 * @inheritDoc
 		 */
-		public function fail( withData : * = null ) : void
+		public function fail( payload : * = null ) : void
 		{
 			if( failed.numListeners )
 			{
-				_failed.dispatch( withData );
+				_failed.dispatch( payload );
 			}
 			
 			release( );

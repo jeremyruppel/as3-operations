@@ -14,7 +14,7 @@ package com.jeremyruppel.operations.chain
 	import com.jeremyruppel.operations.core.IOperation;
 
 	/**
-	 * Class.
+	 * Simple helper class for chaining operations together.
 	 * 
 	 * @langversion ActionScript 3.0
 	 * @playerversion Flash 9.0
@@ -39,16 +39,20 @@ package com.jeremyruppel.operations.chain
 		//  PRIVATE VARIABLES
 		//--------------------------------------
 	
+		/**
+		 * @private
+		 */
 		private var factories : Array = new Array( );
 		
 		//--------------------------------------
-		//  GETTER/SETTERS
-		//--------------------------------------
-	
-		//--------------------------------------
 		//  PUBLIC METHODS
 		//--------------------------------------
-	
+		
+		/**
+		 * adds a new operation factory to the chain
+		 * @param factory IOperationFactory
+		 * @return OperationChain 
+		 */
 		public function add( factory : IOperationFactory ) : OperationChain
 		{
 			factories.push( factory );
@@ -64,7 +68,7 @@ package com.jeremyruppel.operations.chain
 		 * @param payload *
 		 * @private
 		 */
-		private function onOperationSucceeded( payload : * ) : void
+		protected function onOperationSucceeded( payload : * ) : void
 		{
 			proceed( payload );
 		}
@@ -73,7 +77,7 @@ package com.jeremyruppel.operations.chain
 		 * @param payload *
 		 * @private
 		 */
-		private function onOperationFailed( payload : * ) : void
+		protected function onOperationFailed( payload : * ) : void
 		{
 			if( failed.numListeners )
 			{

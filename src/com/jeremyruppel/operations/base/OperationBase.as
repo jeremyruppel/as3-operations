@@ -15,7 +15,7 @@ package com.jeremyruppel.operations.base
 	import org.osflash.signals.Signal;
 
 	/**
-	 * Class.
+	 * Shared base class for operations in this package.
 	 * 
 	 * @langversion ActionScript 3.0
 	 * @playerversion Flash 9.0
@@ -67,6 +67,11 @@ package com.jeremyruppel.operations.base
 		 */
 		protected var calling : Boolean;
 		
+		/**
+		 * @private
+		 */
+		protected var signalImplementation : Class = Signal;
+		
 		//--------------------------------------
 		//  GETTER/SETTERS
 		//--------------------------------------
@@ -76,7 +81,7 @@ package com.jeremyruppel.operations.base
 		 */
 		public function get succeeded( ) : ISignal
 		{
-			return _succeeded || ( _succeeded = ( _successClass ? new Signal( _successClass ) : new Signal( ) ) );
+			return _succeeded || ( _succeeded = ( _successClass ? new signalImplementation( _successClass ) : new signalImplementation( ) ) );
 		}
 		
 		/**
@@ -84,7 +89,7 @@ package com.jeremyruppel.operations.base
 		 */
 		public function get failed( ) : ISignal
 		{
-			return _failed || ( _failed = ( _failureClass ? new Signal( _failureClass ) : new Signal( ) ) );
+			return _failed || ( _failed = ( _failureClass ? new signalImplementation( _failureClass ) : new signalImplementation( ) ) );
 		}
 		
 		//--------------------------------------
