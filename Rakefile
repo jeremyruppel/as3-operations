@@ -73,7 +73,7 @@ task :test do
   -source-path+=test,src,libs/src \
   -library-path+=libs/bin \
   -output deploy/OperationsTestRunner.swf \
-  -static-link-runtime-shared-libraries=false \
+  -static-link-runtime-shared-libraries=true \
   test/OperationsTestRunner.mxml`
   File.delete 'deploy/OperationsTestRunner.swf.cache' if File.exist? 'deploy/OperationsTestRunner.swf.cache'
   `open deploy/index.html`
